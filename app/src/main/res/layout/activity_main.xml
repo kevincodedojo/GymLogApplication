@@ -40,6 +40,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/exerciseLabelTextView"
         app:layout_constraintStart_toEndOf="@id/exerciseLabelTextView"
         android:hint="@string/enter_an_exercise"
+        android:id="@+id/exerciseEditText"
         />
 
     <TextView
@@ -63,6 +64,8 @@
         app:layout_constraintBaseline_toBaselineOf="@id/weightLabelTextView"
         app:layout_constraintStart_toEndOf="@id/weightLabelTextView"
         android:hint="@string/Enter_a_Weight"
+        android:id="@+id/weightEditText"
+
         />
 
     <TextView
@@ -86,9 +89,12 @@
         app:layout_constraintBaseline_toBaselineOf="@id/repsLabelTextView"
         app:layout_constraintStart_toEndOf="@id/repsLabelTextView"
         android:hint="@string/enter_reps"
+        android:id="@+id/repsEditText"
+
         />
 
     <Button
+        android:id="@+id/logButton"
         android:layout_width="390dp"
         android:layout_height="205dp"
         android:layout_marginTop="16dp"
