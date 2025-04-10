@@ -1,11 +1,11 @@
-package com.example.gymlogapplication.Database.entities;
+package com.example.gymlogapplication.database.entities;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.gymlogapplication.Database.GymLogDatabase;
+import com.example.gymlogapplication.database.GymLogDatabase;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity(tableName = GymLogDatabase.GYM_LOG_TABLE)
@@ -16,13 +16,24 @@ public class GymLog {
     private String exercise;
     private double weight;
     private int reps;
-    private LocalDate localDate;
+    private LocalDateTime localDate;
 
     public GymLog(String exercise, double weight, int reps) {
         this.exercise = exercise;
         this.weight = weight;
         this.reps = reps;
-        localDate = LocalDate.now();
+        localDate = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "GymLog{" +
+                "id=" + id +
+                ", exercise='" + exercise + '\'' +
+                ", weight=" + weight +
+                ", reps=" + reps +
+                ", localDate=" + localDate +
+                '}';
     }
 
     @Override
@@ -70,11 +81,11 @@ public class GymLog {
         this.reps = reps;
     }
 
-    public LocalDate getLocalDate() {
+    public LocalDateTime getLocalDate() {
         return localDate;
     }
 
-    public void setLocalDate(LocalDate localDate) {
+    public void setLocalDate(LocalDateTime localDate) {
         this.localDate = localDate;
     }
 }
