@@ -33,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     int mReps = 0;
 
+    //todo
+    int loggedInUserId = -1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +56,14 @@ public class MainActivity extends AppCompatActivity {
                 updateDisplay();
             }
         });
+
     }
 
     private void insertGymlogRecord(){
         if(mExercise.isEmpty()){
             return;
         }
-        GymLog log = new GymLog(mExercise,mWeight,mReps);
+        GymLog log = new GymLog(mExercise,mWeight,mReps, loggedInUserId);
         repository.insertGymLog(log);
     }
 

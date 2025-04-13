@@ -19,10 +19,13 @@ public class GymLog {
     private int reps;
     private LocalDateTime localDate;
 
-    public GymLog(String exercise, double weight, int reps) {
+    private int userId;
+
+    public GymLog(String exercise, double weight, int reps, int userId) {
         this.exercise = exercise;
         this.weight = weight;
         this.reps = reps;
+        this.userId = userId;
         localDate = LocalDateTime.now();
     }
 
@@ -40,13 +43,13 @@ public class GymLog {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GymLog gymLog = (GymLog) o;
-        return id == gymLog.id && Double.compare(weight, gymLog.weight) == 0 && reps == gymLog.reps && Objects.equals(exercise, gymLog.exercise) && Objects.equals(localDate, gymLog.localDate);
+        GymLog log = (GymLog) o;
+        return id == log.id && Double.compare(weight, log.weight) == 0 && reps == log.reps && userId == log.userId && Objects.equals(exercise, log.exercise) && Objects.equals(localDate, log.localDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, exercise, weight, reps, localDate);
+        return Objects.hash(id, exercise, weight, reps, localDate, userId);
     }
 
     public int getId() {
@@ -87,5 +90,13 @@ public class GymLog {
 
     public void setLocalDate(LocalDateTime localDate) {
         this.localDate = localDate;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
