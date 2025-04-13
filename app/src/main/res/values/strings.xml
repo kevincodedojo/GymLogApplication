@@ -9,4 +9,8 @@
     <string name="enter_reps">Enter Reps</string>
     <string name="log">Log!</string>
     <string name="noting_here_time_to_hit_the_gym">Noting here, time to hit the gym!</string>
+    <string name="login_welcome">Welcom to the GymLog. Please Sign in.</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="login">Login!</string>
 </resources>
