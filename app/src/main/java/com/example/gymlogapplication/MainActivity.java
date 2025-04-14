@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -17,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.gymlogapplication.database.GymLogRepository;
 import com.example.gymlogapplication.database.entities.GymLog;
+import com.example.gymlogapplication.database.entities.User;
 import com.example.gymlogapplication.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
@@ -37,8 +42,9 @@ public class MainActivity extends AppCompatActivity {
     int mReps = 0;
 
     //todo
-    int loggedInUserId = -1;
+    private int loggedInUserId = -1;
 
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         loginUser();
+
+        invalidateOptionsMenu();
 
         if(loggedInUserId == -1){
             Intent intent = LoginActivity.loginIntentFactory(getApplicationContext());
@@ -70,8 +78,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        //Todo, create login method
+        //Todo,
+        user = new User("user1", "user1");
         loggedInUserId = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, -1);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.logoutMenuItem);
+        item.setVisible(true);
+        item.setTitle(user.getUsername());
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem item) {
+                Toast.makeText(MainActivity.this,"LOGOUT TO BE IMPLEMENTED", Toast.LENGTH_SHORT).show();
+                logout();
+                return false;
+            }
+        });
+        return true;
+    }
+
+    private void logout() {
+        //todo: logout method
+        startActivity(LoginActivity.loginIntentFactory(getApplicationContext()));
     }
 
     static Intent mainActivityIntentFactory(Context context, int userId){
