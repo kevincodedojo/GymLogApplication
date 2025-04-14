@@ -1,7 +1,9 @@
 package com.example.gymlogapplication;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -98,12 +100,35 @@ public class MainActivity extends AppCompatActivity {
         item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem item) {
-                Toast.makeText(MainActivity.this,"LOGOUT TO BE IMPLEMENTED", Toast.LENGTH_SHORT).show();
-                logout();
+                showLogoutDialog();
                 return false;
             }
         });
         return true;
+    }
+
+    private void showLogoutDialog(){
+        AlertDialog.Builder alerBuilder = new AlertDialog.Builder(MainActivity.this);
+        final AlertDialog alertDialog = alerBuilder.create();
+
+        alerBuilder.setMessage("Logout?");
+
+        alerBuilder.setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                logout();
+            }
+        });
+
+        alerBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alerBuilder.create().show();
+
     }
 
     private void logout() {
