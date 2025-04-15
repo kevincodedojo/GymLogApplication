@@ -8,7 +8,6 @@ import androidx.room.Query;
 
 import com.example.gymlogapplication.database.entities.GymLog;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Dao
@@ -19,4 +18,8 @@ public interface GymLogDAO {
 
     @Query("Select * from " + GymLogDatabase.GYM_LOG_TABLE + " ORDER BY localDate DESC")
     List<GymLog> getAllRecords();
+
+    @Query("Select * from " + GymLogDatabase.GYM_LOG_TABLE + " where userId = :loggedInUserId ORDER BY localDate DESC")
+    List<GymLog> getRecordsetUserId(int loggedInUserId);
+
 }

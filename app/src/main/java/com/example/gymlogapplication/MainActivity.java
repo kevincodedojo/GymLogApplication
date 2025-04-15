@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     static final String SHARED_PREFERENCE_USERID_VALUE = "com.declink.gymlogapplication.SHARED_PREFERENCE_USERID_VALUE";
 
+    static final String SAVED_INSTANCE_STATE_USERID_KEY = "com.declink.gymlogapplication.SAVED_INSTANCE_STATE_USERID_KEY";
+
 
     private static final int LOGGED_OUT = -1;
     private ActivityMainBinding binding;
@@ -59,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = com.declink.gymlogpractice.databinding.ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loginUser();
-
+        repository = GymLogRepository.getRepository(getApplication());
+        loginUser(savedInstanceState);
 
 
         if(loggedInUserId == -1){
@@ -71,13 +73,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
-//        invalidateOptionsMenu();
-
-        repository = GymLogRepository.getRepository(getApplication());
 
         binding.logDisplayTextView.setMovementMethod(new ScrollingMovementMethod());
-
         updateDisplay();
+
         binding.logButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,36 +86,58 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        binding.exerciseInputEditTest.setOnclickListener( new View.OnClickListener(){
+                @Override
+                public void onClick(View v){
+                    updateDisplay();}
+        });
+
     }
 
-    private void loginUser() {
-
+    private void loginUser(Bundle saveInstanceState) {
 //        user = new User("user1", "user1");
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
                 Context.MODE_PRIVATE);
 
-        loggedInUserId = sharedPreferences.getInt(SHARED_PREFERENCE_USERID_VALUE,LOGGED_OUT);
-        if (loggedInUserId != LOGGED_OUT){
-            return;
+        if (sharedPreferences.contains(SHARED_PREFERENCE_USERID_VALUE)){
+            loggedInUserId = sharedPreferences.getInt(SHARED_PREFERENCE_USERID_VALUE,LOGGED_OUT);
         }
 
+        if (loggedInUserId == LOGGED_OUT & saveInstanceState != null && saveInstanceState.containsKey(SAVED_INSTANCE_STATE_USERID_KEY)){
+            loggedInUserId = saveInstanceState.getInt(SAVED_INSTANCE_STATE_USERID_KEY,LOGGED_OUT);
+        }
 
-        loggedInUserId = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, LOGGED_OUT);
+        if(loggedInUserId == LOGGED_OUT){
+            loggedInUserId = getIntent().getIntExtra(MAIN_ACTIVITY_USER_ID, LOGGED_OUT);
+        }
+
         if(loggedInUserId == LOGGED_OUT){
             return;
         }
 
         LiveData<User> userObserver = repository.getUserByUserId(loggedInUserId);
         userObserver.observe(this, user -> {
-            if(user != null){
+            this.user = user;
+            if(this.user != null){
                 invalidateOptionsMenu();
+            }else {
+                //todo verified code
+                logout();
             }
         });
-
-
-
-
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState){
+        super.onSaveInstanceState(outState);
+        outState.putInt(SAVED_INSTANCE_STATE_USERID_KEY, loggedInUserId);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
+        sharedPrefEditor.putInt(MainActivity.SHARED_PREFERENCE_USERID_KEY, loggedInUserId);
+        sharedPrefEditor.apply();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -195,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay(){
-        ArrayList<GymLog> allLogs = repository.getAllLogs();
+        ArrayList<GymLog> allLogs = repository.getAllLogsByUserId(loggedInUserId);
         if(allLogs.isEmpty()){
             binding.logDisplayTextView.setText(R.string.noting_here_time_to_hit_the_gym);
         }

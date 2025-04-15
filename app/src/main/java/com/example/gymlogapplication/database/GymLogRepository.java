@@ -49,6 +49,7 @@ public class GymLogRepository {
 
     }
 
+    //todo update liveData
     public ArrayList<GymLog> getAllLogs() {
         Future<ArrayList<GymLog>> future = GymLogDatabase.databaseWriteExecutor.submit(
                 new Callable<ArrayList<GymLog>>() {
@@ -92,4 +93,20 @@ public class GymLogRepository {
         return userDAO.getUserByUserId(String.valueOf(userId));
     }
 
+    public ArrayList<GymLog> getAllLogsByUserId(int loggedInUserId) {
+        Future<ArrayList<GymLog>> future = GymLogDatabase.databaseWriteExecutor.submit(
+                new Callable<ArrayList<GymLog>>() {
+                    @Override
+                    public ArrayList<GymLog> call() throws Exception {
+                        return (ArrayList<GymLog>) gymLogDAO.getRecordsetUserId(loggedInUserId);
+                    }
+                }
+        );
+        try {
+            return future.get();
+        }catch (InterruptedException | ExecutionException e){
+            Log.i(MainActivity.TAG, "Problem when getting all GymLogs in the repository");
+        }
+        return null;
+    }
 }
