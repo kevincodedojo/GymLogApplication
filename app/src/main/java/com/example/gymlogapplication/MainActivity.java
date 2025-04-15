@@ -73,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
 
+        updateSharePreference();
+
 
         binding.logDisplayTextView.setMovementMethod(new ScrollingMovementMethod());
         updateDisplay();
@@ -96,12 +98,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void loginUser(Bundle saveInstanceState) {
 //        user = new User("user1", "user1");
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key),
                 Context.MODE_PRIVATE);
 
-        if (sharedPreferences.contains(SHARED_PREFERENCE_USERID_VALUE)){
-            loggedInUserId = sharedPreferences.getInt(SHARED_PREFERENCE_USERID_VALUE,LOGGED_OUT);
-        }
+        loggedInUserId = sharedPreferences.getInt(getString(R.string.preference_userId_key),LOGGED_OUT);
+
 
         if (loggedInUserId == LOGGED_OUT & saveInstanceState != null && saveInstanceState.containsKey(SAVED_INSTANCE_STATE_USERID_KEY)){
             loggedInUserId = saveInstanceState.getInt(SAVED_INSTANCE_STATE_USERID_KEY,LOGGED_OUT);
@@ -120,9 +121,6 @@ public class MainActivity extends AppCompatActivity {
             this.user = user;
             if(this.user != null){
                 invalidateOptionsMenu();
-            }else {
-                //todo verified code
-                logout();
             }
         });
     }
@@ -131,11 +129,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState){
         super.onSaveInstanceState(outState);
         outState.putInt(SAVED_INSTANCE_STATE_USERID_KEY, loggedInUserId);
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
-        sharedPrefEditor.putInt(MainActivity.SHARED_PREFERENCE_USERID_KEY, loggedInUserId);
-        sharedPrefEditor.apply();
+
+        updateSharePreference();
+
+//        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,
+//                Context.MODE_PRIVATE);
+//        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
+//        sharedPrefEditor.putInt(MainActivity.SHARED_PREFERENCE_USERID_KEY, loggedInUserId);
+//        sharedPrefEditor.apply();
     }
 
 
@@ -191,14 +192,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,Context.MODE_PRIVATE);
-        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
-        sharedPrefEditor.putInt(SHARED_PREFERENCE_USERID_KEY,LOGGED_OUT);
-        sharedPrefEditor.apply();
+//        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCE_USERID_KEY,Context.MODE_PRIVATE);
+//        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
+//        sharedPrefEditor.putInt(SHARED_PREFERENCE_USERID_KEY,LOGGED_OUT);
+//        sharedPrefEditor.apply();
 
-        getIntent().putExtra(MAIN_ACTIVITY_USER_ID,LOGGED_OUT);
+        loggedInUserId = LOGGED_OUT;
+        updateSharePreference();
+
+        getIntent().putExtra(MAIN_ACTIVITY_USER_ID,loggedInUserId);
 
         startActivity(LoginActivity.loginIntentFactory(getApplicationContext()));
+    }
+
+    private void updateSharePreference(){
+        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(getString(R.string.preference_file_key),
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPrefEditor = sharedPreferences.edit();
+        sharedPrefEditor.putInt(getString(R.string.preference_userId_key),loggedInUserId);
+        sharedPrefEditor.apply();
     }
 
     static Intent mainActivityIntentFactory(Context context, int userId){
