@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = com.declink.gymlogpractice.databinding.ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         repository = GymLogRepository.getRepository(getApplication());
@@ -88,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        binding.exerciseInputEditTest.setOnclickListener( new View.OnClickListener(){
-                @Override
-                public void onClick(View v){
-                    updateDisplay();}
-        });
+//        binding.exerciseInputEditTest.setOnclickListener( new View.OnClickListener(){
+//                @Override
+//                public void onClick(View v){
+//                    updateDisplay();}
+//        });
 
     }
 
